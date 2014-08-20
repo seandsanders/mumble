@@ -54,6 +54,8 @@
                     <i class="fa fa-fw fa-2x fa-check${' hidden' if not web.user.has_password else ''} success text-success"></i>
                 </span>
             </div>
+            <br/>
+            <div class="password-meter progress"><div class="progress-bar bar-danger" style="width: 0%;"><span class="password-verdict"></span></div></div>
         </%self:panel>
     </div>
 </div>
@@ -68,6 +70,8 @@
     <script src="/js/zxcvbn-async.js"></script>
     
     <script>
+        var ZXCVBN_RESULT_STRINGS = ['Fail', 'Really Shit', 'Shit', 'Fine, I Guess', 'Impregnable!'],
+          MINIMUM_PASSWORD_SCORE = 3;
         $(function(){
             $('#password').on('keyup', function(e){
                 if(checkForEnter(e))
@@ -77,7 +81,22 @@
                 
                 // TODO: Exclude the character's name.
                 var analysis = zxcvbn($('#password').val(), []);
-                
+
+                $(".password-verdict").text(ZXCVBN_RESULT_STRINGS[analysis.score]);
+                $(".password-meter .progress-bar").width( (analysis.score + 1) * 20 + "%");
+
+                var progressBar = $(".progress .progress-bar");
+                if( analysis.score < MINIMUM_PASSWORD_SCORE )
+                {
+                    progressBar.removeClass("progress-bar-success");
+                    progressBar.addClass("progress-bar-danger");
+                }
+                else
+                {
+                    progressBar.removeClass("progress-bar-danger");
+                    progressBar.addClass("progress-bar-success");
+                }
+
                 $('i.fa.incomplete, i.fa.success, i.fa[data-score]').addClass('hidden');
                 $('i.fa[data-score=' + analysis.score + ']').removeClass('hidden');
             });
