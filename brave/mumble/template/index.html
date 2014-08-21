@@ -1,5 +1,7 @@
 ## encoding: utf-8
 
+<%! from brave.mumble.controller import MINIMUM_PASSWORD_STRENGTH %>
+
 <%inherit file="brave.mumble.template.master"/>
 <%namespace name="f" file="brave.mumble.template.filter"/>
 
@@ -70,8 +72,7 @@
     <script src="/js/zxcvbn-async.js"></script>
     
     <script>
-        var ZXCVBN_RESULT_STRINGS = ['Fail', 'Really Shit', 'Shit', 'Fine, I Guess', 'Impregnable!'],
-          MINIMUM_PASSWORD_SCORE = 3;
+        var ZXCVBN_RESULT_STRINGS = ['Fail', 'Really Shit', 'Shit', 'Almost There', 'Impregnable!'];
         $(function(){
             $('#password').on('keyup', function(e){
                 if(checkForEnter(e))
@@ -83,10 +84,10 @@
                 var analysis = zxcvbn($('#password').val(), []);
 
                 $(".password-verdict").text(ZXCVBN_RESULT_STRINGS[analysis.score]);
-                $(".password-meter .progress-bar").width( (analysis.score + 1) * 20 + "%");
+                $(".password-meter .progress-bar").width( Math.min(100, analysis.entropy + 20) + "%");
 
                 var progressBar = $(".progress .progress-bar");
-                if( analysis.score < MINIMUM_PASSWORD_SCORE )
+                if( analysis.score < ${MINIMUM_PASSWORD_STRENGTH} )
                 {
                     progressBar.removeClass("progress-bar-success");
                     progressBar.addClass("progress-bar-danger");

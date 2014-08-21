@@ -13,6 +13,8 @@ import zxcvbn
 log = __import__('logging').getLogger(__name__)
 
 
+MINIMUM_PASSWORD_STRENGTH = 4
+
 class RootController(Controller, StartupMixIn, AuthenticationMixIn):
     def index(self):
         if authenticated:
@@ -24,7 +26,7 @@ class RootController(Controller, StartupMixIn, AuthenticationMixIn):
         u = user._current_obj()
         
         #If the password has a score of less than 4, don't permit it (this check also done client-side)
-        if(zxcvbn.password_strength(password).get("score") < 4):
+        if(zxcvbn.password_strength(password).get("score") < MINIMUM_PASSWORD_STRENGTH):
             return 'json:', dict(success=False, message="The password supplied was not strong enough.")
 
         try:
