@@ -3,3 +3,6 @@
 
 be925ea: Add mumble.bypassCore to your config file. True means mumble will fall back to the local database if the
     connection to Core fails.
+
+b49ae62: Add mumble.required_pass_strength to the config file. This is the minimum zxcvbn score the admin wants to
+    require for all passwords.
