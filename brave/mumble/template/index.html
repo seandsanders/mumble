@@ -1,6 +1,6 @@
 ## encoding: utf-8
 
-<%! from brave.mumble.controller import MINIMUM_PASSWORD_STRENGTH %>
+<%! from web.core import config %>
 
 <%inherit file="brave.mumble.template.master"/>
 <%namespace name="f" file="brave.mumble.template.filter"/>
@@ -87,7 +87,7 @@
                 $(".password-meter .progress-bar").width( Math.min(100, analysis.entropy + 20) + "%");
 
                 var progressBar = $(".progress .progress-bar");
-                if( analysis.score < ${MINIMUM_PASSWORD_STRENGTH} )
+                if( analysis.score < ${config['mumble.required_pass_strength']} )
                 {
                     progressBar.removeClass("progress-bar-success");
                     progressBar.addClass("progress-bar-danger");
